@@ -205,9 +205,14 @@ function IPS_Generic(method, params, callback) {
     request(options, function (err, res, body) {
         if (err) {
             adapter.log.error('error posting json: ', err);
-            callback(err);
+            if (typeof callback === 'function') callback(err);
         } else {
-            callback(null, body.result);
+            if (typeof callback === 'function') callback(null, body.result);
+        }
+    }).on('error', function (err) {
+        if (err) {
+            adapter.log.error('error posting json: ', err);
+            if (typeof callback === 'function') callback(err);
         }
     });
 }
@@ -220,14 +225,19 @@ function IPS_GetObjectList(callback) {
     IPS_Generic('IPS_GetObjectList', function (err, list) {
         var objs = {};
         var count = 0;
-        for (var i = 0; i < list.length; i++) {
-            count++;
-            IPS_GetObject(list[i], function (err, obj) {
-                objs[obj.ObjectID] = obj;
-                if (!--count) {
-                    callback(null, objs);
-                }
-            });
+        if (list && typeof list === 'object') {
+            for (var i = 0; i < list.length; i++) {
+                count++;
+                IPS_GetObject(list[i], function (err, obj) {
+                    objs[obj.ObjectID] = obj;
+                    if (!--count) {
+                        callback(null, objs);
+                    }
+                });
+            }
+        } else {
+            adapter.log.warn('IP Symcon returned no objects');
+            callback(null, objs);
         }
     });
 }
@@ -260,14 +270,19 @@ function IPS_GetVariableList(callback) {
     IPS_Generic('IPS_GetVariableList', function (err, list) {
         var objs = {};
         var count = 0;
-        for (var i = 0; i < list.length; i++) {
-            count++;
-            IPS_GetVariable(list[i], function (err, obj) {
-                objs[obj.VariableID] = obj;
-                if (!--count) {
-                    callback(null, objs);
-                }
-            });
+        if (list && typeof list === 'object') {
+            for (var i = 0; i < list.length; i++) {
+                count++;
+                IPS_GetVariable(list[i], function (err, obj) {
+                    objs[obj.VariableID] = obj;
+                    if (!--count) {
+                        callback(null, objs);
+                    }
+                });
+            }
+        } else {
+            adapter.log.warn('IP Symcon returned no variables');
+            callback(null, objs);
         }
     });
 }
