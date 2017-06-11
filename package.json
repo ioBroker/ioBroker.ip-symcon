@@ -1,0 +1,47 @@
+{
+  "name": "iobroker.ip-symcon",
+  "version": "0.1.3",
+  "description": "ioBroker IP Symcon Adapter",
+  "author": {
+    "name": "bluefox",
+    "email": "dogafox@gmail.com"
+  },
+  "contributors": [
+    {
+      "name": "bluefox",
+      "email": "dogafox@gmail.com"
+    }
+  ],
+  "homepage": "https://github.com/ioBroker/ioBroker.ip-symcon",
+  "license": "MIT",
+  "keywords": [
+    "ioBroker",
+    "ip-symcon",
+    "Smart Home",
+    "home automation"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ioBroker/ioBroker.ip-symcon"
+  },
+  "dependencies": {
+    "request": "^2.81.0"
+  },
+  "devDependencies": {
+      "grunt": "^0.4.5",
+      "grunt-replace": "^0.9.3",
+      "grunt-contrib-jshint": "^0.11.2",
+      "grunt-jscs": "^2.0.0",
+      "grunt-http": "^1.6.0",
+      "mocha": "^2.3.4",
+      "chai": "^3.4.1"
+  },
+  "main": "main.js",
+  "scripts": {
+    "test": "node node_modules/mocha/bin/mocha"
+  },
+  "bugs": {
+    "url": "https://github.com/ioBroker/ioBroker.ip-symcon/issues"
+  },
+  "readmeFilename": "README.md"
+}

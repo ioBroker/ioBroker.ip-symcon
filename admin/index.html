@@ -1,0 +1,105 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../../lib/css/themes/jquery-ui/redmond/jquery-ui.min.css"/>
+<script type="text/javascript" src="../../lib/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../../socket.io/socket.io.js"></script>
+<script type="text/javascript" src="../../lib/js/jquery-ui-1.10.3.full.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../../css/adapter.css"/>
+<script type="text/javascript" src="../../js/translate.js"></script>
+<script type="text/javascript" src="../../js/adapter-settings.js"></script>
+<script type="text/javascript" src="words.js"></script>
+
+<script type="text/javascript">
+
+    function encrypt(key, value) {
+        var result = '';
+        for(var i = 0; i < value.length; i++) {
+            result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
+        }
+        return result;
+    }
+    function decrypt(key, value) {
+        var result = '';
+        for(var i = 0; i < value.length; i++) {
+            result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
+        }
+        return result;
+    }
+
+    // the function loadSettings has to exist ...
+    function load(settings, onChange) {
+        systemConfig.native = systemConfig.native || {};
+        systemConfig.native.secret = systemConfig.native.secret || 'Zgfr56gFe87jJOM';
+
+        if (settings.url) {
+            settings.protocol = settings.url.match(/^https:/) ? 'https' : 'http';
+            var url = settings.url.replace('https://', '').replace('http://', '');
+            var parts = url.split('/');
+            settings.path = '/' + (parts[1] || '');
+            parts = parts[0].split(':');
+            settings.host = parts[0];
+            settings.port = parts[1] || 80;
+            delete settings.url;
+        }
+
+        for (var key in settings) {
+            if (!settings.hasOwnProperty(key)) continue;
+
+            if (key === 'password') {
+                settings.password = decrypt(atob(systemConfig.native.secret), settings.password);
+            }
+
+            var $value = $('#' + key + '.value');
+            if ($value.attr('type') === 'checkbox') {
+                $value.prop('checked', settings[key]).change(function () {
+					onChange();
+				});
+            } else {
+                $value.val(settings[key]).change(function () {
+					onChange();
+				}).keyup(function () {
+					$(this).trigger('change');
+				});
+            }
+        }
+        onChange(false);
+    }
+
+    function save(callback) {
+        var obj = {};
+        $('.value').each(function () {
+            var $this = $(this);
+            var id = $this.attr('id');
+            if ($this.attr('type') === 'checkbox') {
+                obj[id] = $this.prop('checked');
+            } else {
+                obj[id] = (id === 'password') ? btoa(encrypt(systemConfig.native.secret, $this.val())) : $this.val();
+            }
+        });
+        obj.url = '';
+        callback(obj);
+    }
+</script>
+</head>
+<body>
+<div id="adapter-container">
+
+    <table><tr>
+        <td><img src="ip-symcon.png" width="128" height="128"/></td>
+        <td><h3 class="translate">IP Symcon adapter settings</h3></td>
+    </tr></table>
+    <table style="width: 100%">
+        <tr><td style="width: 200px"><label class="translate" for="host">IP Symcon IP:</label></td><td class="admin-icon"></td><td><input class="value" id="host" style="width: 100%"/></td></tr>
+        <tr><td style="width: 200px"><label class="translate" for="port">IP Symcon Port:</label></td><td class="admin-icon"></td><td><input class="value" id="port" type="number" style="width: 60px"/></td></tr>
+        <tr><td style="width: 200px"><label class="translate" for="protocol">IP Symcon protocol:</label></td><td class="admin-icon"></td><td><select style="width: 60px" class="value" id="protocol"><option value="http">http</option><option value="https">https</option></select></td></tr>
+        <tr><td style="width: 200px"><label class="translate" for="path">IP Symcon path:</label></td><td class="admin-icon"></td><td><input class="value" id="path"  style="width: 100%"/></td></tr>
+        <tr><td><label class="translate" for="username">Username:</label></td><td class="admin-icon"></td><td><input class="value" id="username"  style="width: 100%"/></td></tr>
+        <tr><td><label class="translate" for="password">Password:</label></td><td class="admin-icon"></td><td><input class="value" type="password" id="password"  style="width: 100%"/></td></tr>
+        <tr><td></td><td></td><td></td></tr>
+        <tr><td><label class="translate" for="pollInterval">Poll interval(ms):</label></td><td class="admin-icon"></td><td><input class="value" id="pollInterval" style="width: 100%"/></td></tr>
+        <tr><td><label class="translate" for="reconnectTimeout">Reconnect timeout(ms):</label></td><td class="admin-icon"></td><td><input class="value" id="reconnectTimeout" style="width: 100%"/></td></tr>
+    </table>
+</div>
+</body>
+</html>

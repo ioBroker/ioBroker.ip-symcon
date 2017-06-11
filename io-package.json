@@ -1,0 +1,70 @@
+{
+    "common": {
+        "name":                     "ip-symcon",
+        "version":                  "0.1.3",
+	    "news": {
+			"0.1.3": {
+			  "en": "change settings",
+			  "de": "Einstellungen sind geändert",
+			  "ru": "Изменены настройки"
+			},
+            "0.1.0": {
+			  "en": "initial adapter",
+			  "de": "Initiale Version",
+			  "ru": "Первоначальный адаптер"
+			}
+		},
+        "title":                    "ip-symcon adapter",
+        "desc":                     {
+				 "en": "ioBroker ip-symcon Adapter",
+				 "de": "ioBroker ip-symcon Adapter",
+				 "ru": "ioBroker ip-symcon драйвер"
+		},
+        "platform":                 "Javascript/Node.js",
+		"localLink":                "%protocol%://%host%:%port%/",
+        "mode":                     "daemon",
+        "icon":                     "ip-symcon.png",
+        "enabled":                  false,
+		"extIcon":                  "https://raw.githubusercontent.com/ioBroker/ioBroker.ip-symcon/master/admin/ip-symcon.png",
+		"keywords":                 ["ip-symcon"],
+        "readme":                   "https://github.com/ioBroker/ioBroker.ip-symcon/blob/master/README.md",
+		"loglevel":                 "info",
+        "type":                     "iot-system"
+    },
+    "native": {
+        "host": "",
+		"port": 3777,
+		"protocol": "http",
+		"path": "/api/",
+        "username": "",
+        "password": "",
+        "reconnectTimeout": 30000,
+        "pollInterval": 5000
+    },
+    "objects": [
+
+    ],
+  "instanceObjects": [
+    {
+      "_id":  "info",
+      "type": "channel",
+      "common": {
+        "name": "Information"
+      },
+      "native": {}
+    },
+    {
+      "_id":  "info.connection",
+      "type": "state",
+      "common": {
+        "role":  "indicator.connected",
+        "name":  "If connected to openhab server",
+        "type":  "boolean",
+        "read":  true,
+        "write": false,
+        "def":   false
+      },
+      "native": {}
+    }
+  ]
+}
